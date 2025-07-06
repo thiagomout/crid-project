@@ -33,7 +33,7 @@ jobs:
           pip install eth-brownie
 
       - name: Install Solidity dependencies
-        run: brownie pm install OpenZeppelin/openzeppelin-contracts@4.9.3 --yes
+        run: brownie pm install OpenZeppelin/openzeppelin-contracts@4.9.3
 
       - name: Run tests
         run: brownie test
