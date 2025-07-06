@@ -1,6 +1,5 @@
 name: Smart Contract CI
 
-# Gatilhos: Roda o pipeline a cada push ou pull request na branch 'main'
 on:
   push:
     branches: [ main ]
@@ -23,6 +22,9 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository ppa:deadsnakes/ppa -y
+          sudo apt-get update
           sudo apt-get install -y python3.10-dev gcc
 
       - name: Install Python dependencies
@@ -31,7 +33,7 @@ jobs:
           pip install eth-brownie
 
       - name: Install Solidity dependencies
-        run: brownie pm install OpenZeppelin/openzeppelin-contracts@4.9.3
+        run: brownie pm install OpenZeppelin/openzeppelin-contracts@4.9.3 --yes
 
       - name: Run tests
         run: brownie test
