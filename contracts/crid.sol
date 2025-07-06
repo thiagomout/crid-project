@@ -16,6 +16,8 @@ contract CRIDAcademico is ERC721URIStorage, Ownable {
     // Um contador para gerar IDs únicos para cada CRID (1, 2, 3...)
     Counters.Counter private _tokenIds;
 
+    event CRIDEmitido(uint256 indexed cridId, address indexed aluno, string metadataURI);
+
     constructor() ERC721("CRID UFRJ", "CRIDUFRJ") {}
 
     /**
@@ -33,6 +35,9 @@ contract CRIDAcademico is ERC721URIStorage, Ownable {
 
         _safeMint(aluno, novoCRIDId);
         _setTokenURI(novoCRIDId, metadataURI);
+
+        emit CRIDEmitido(novoCRIDId, aluno, metadataURI);
+        // Retorna o ID do novo CRID emitido
 
         return novoCRIDId;
     }

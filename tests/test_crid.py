@@ -19,7 +19,10 @@ def test_emissao_sucesso(crid_contract):
 
     assert crid_contract.ownerOf(emitted_token_id) == aluno
     assert crid_contract.balanceOf(aluno) == 1
-    assert crid_contract.tokenURI(emitted_token_id) == METADATA_URI
+    assert "CRIDEmitido" in tx.events
+    assert tx.events["CRIDEmitido"]["aluno"] == aluno
+    assert tx.events["CRIDEmitido"]["cridId"] == emitted_token_id
+    assert tx.events["CRIDEmitido"]["metadataURI"] == METADATA_URI
 
 def test_emissao_falha_nao_autorizada(crid_contract):
 
