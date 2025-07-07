@@ -16,6 +16,11 @@ contract CRIDAcademico is ERC721URIStorage, Ownable {
     // Um contador para gerar IDs únicos para cada CRID (1, 2, 3...)
     Counters.Counter private _tokenIds;
 
+    mapping(uint256 => bool) private _revokedTokens; // Mapeia IDs de CRIDs revogados
+
+    event CRIDRevogado(uint256 indexed tokenId);
+    // Evento que será emitido quando um CRID for emitido
+
     event CRIDEmitido(uint256 indexed cridId, address indexed aluno, string metadataURI);
 
     constructor() ERC721("CRID UFRJ", "CRIDUFRJ") {}
@@ -40,5 +45,36 @@ contract CRIDAcademico is ERC721URIStorage, Ownable {
         // Retorna o ID do novo CRID emitido
 
         return novoCRIDId;
+    }
+
+    function revokeCRID(uint256 tokenId) public onlyOwner {
+        require(_exists(tokenId), "CRID nao existe.");
+        require(!_revokedTokens[tokenId], "CRID ja foi revogado.");
+
+        _revokedTokens[tokenId] = true;
+        emit CRIDRevogado(tokenId);
+    }
+    /**
+     * @dev Verifica se um CRID foi revogado.
+     * @param tokenId ID do CRID a ser verificado.
+     * @return true se o CRID foi revogado, false caso contrário.
+     */
+    function isRevoked(uint256 tokenId) public view returns (bool) {
+        return _revokedTokens[tokenId];
+    }
+    /**
+     * @dev Sobrescreve a função _beforeTokenTransfer do ERC721 para impedir a transferência de CRIDs revogados.
+     * @param from Endereço do remetente (quem está transferindo o token).
+     * @param to Endereço do destinatário (quem está recebendo o token).
+     * @param tokenId ID do token que está sendo transferido.
+     * @param batchSize Tamanho do lote de tokens (não usado aqui, mas necessário para compatibilidade).
+     */
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
+        internal
+        override
+    {
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
+        // Impede a transferência se o token estiver na lista de revogados
+        require(!isRevoked(tokenId), "CRID foi revogado e nao pode ser transferido.");
     }
 }
