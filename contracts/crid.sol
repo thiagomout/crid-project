@@ -46,6 +46,10 @@ contract CRIDAcademico is ERC721URIStorage, Ownable {
 
         return novoCRIDId;
     }
+    /**
+     * @dev Revoga um CRID, tornando-o inválido para transferência.
+     * @param tokenId ID do CRID a ser revogado.
+     */
 
     function revokeCRID(uint256 tokenId) public onlyOwner {
         require(_exists(tokenId), "CRID nao existe.");
